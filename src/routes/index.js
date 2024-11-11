@@ -46,26 +46,26 @@ router.get("/cargo", (req, res) => {
           );
 
           // Si el cargo existe, añade el empleado; si no lo crea
-          if (cargo) {
-            cargo.empleados.push({
-              id: empleado.idEmpleado,
-              nombre: empleado.nameEmpleado,
-              salario: empleado.salarioEmpleado,
-              cargo: empleado.cargoEmpleado,
-            });
-          } else {
-            acc.push({
-              nombreCargo: empleado.cargoEmpleado,
-              empleados: [
-                {
-                  id: empleado.idEmpleado,
-                  nombre: empleado.nameEmpleado,
-                  salario: empleado.salarioEmpleado,
-                  cargo: empleado.cargoEmpleado,
-                },
-              ],
-            });
-          }
+          // if (cargo) {
+          //   cargo.empleados.push({
+          //     id: empleado.idEmpleado,
+          //     nombre: empleado.nameEmpleado,
+          //     salario: empleado.salarioEmpleado,
+          //     cargo: empleado.cargoEmpleado,
+          //   });
+          // } else {
+          //   acc.push({
+          //     nombreCargo: empleado.cargoEmpleado,
+          //     empleados: [
+          //       {
+          //         id: empleado.idEmpleado,
+          //         nombre: empleado.nameEmpleado,
+          //         salario: empleado.salarioEmpleado,
+          //         cargo: empleado.cargoEmpleado,
+          //       },
+          //     ],
+          //   });
+          // }
 
           return acc;
         }, []),
