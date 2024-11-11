@@ -45,27 +45,10 @@ router.get("/cargo", (req, res) => {
             (car) => car.nombreCargo === empleado.cargoEmpleado
           );
 
-          // Si el cargo existe, añade el empleado; si no lo crea
-          // if (cargo) {
-          //   cargo.empleados.push({
-          //     id: empleado.idEmpleado,
-          //     nombre: empleado.nameEmpleado,
-          //     salario: empleado.salarioEmpleado,
-          //     cargo: empleado.cargoEmpleado,
-          //   });
-          // } else {
-          //   acc.push({
-          //     nombreCargo: empleado.cargoEmpleado,
-          //     empleados: [
-          //       {
-          //         id: empleado.idEmpleado,
-          //         nombre: empleado.nameEmpleado,
-          //         salario: empleado.salarioEmpleado,
-          //         cargo: empleado.cargoEmpleado,
-          //       },
-          //     ],
-          //   });
-          // }
+          //Si el cargo existe, añade el empleado; si no lo crea
+          if (cargo) {
+            cargo.empleados.push();
+          }
 
           return acc;
         }, []),
