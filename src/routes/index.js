@@ -9,6 +9,7 @@ router.get("/", (req, res) => {
   mysqlConnection.query("Select * from empleados;", (err, rows, fields) => {
     if (!err) {
 
+       if (rows && Array.isArray(rows) && rows.length > 0) {
       const root = xmlbuilder.create('empleados');
 
 
@@ -29,7 +30,11 @@ router.get("/", (req, res) => {
       const xmlString = root.end({ pretty: true });
        res.header("Content-Type", "application/xml");
        res.send(xmlString);
-
+  // ... tu código existente para crear el XML
+      } else {
+        res.send(convert.json2xml({ message: "No se encontraron empleados" }, { compact: true }));
+      }
+      
     } else {
       console.log(err);
     }
