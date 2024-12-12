@@ -1,12 +1,12 @@
 const mysql = require('mysql2')
 const { Pool } = require('pg');
 
-//const mysqlConnection = new Pool({
-//    host: 'dpg-ctdgpmtumphs73837s0g-a',
-//    user: 'movieshop_user',
-//    password: 'zP3QitlzPNpByoqWO3FMSSzFo1KSISrl',
-//    database: 'movieshop',
-//  port:5432,
+//const mysqlConnection = mysql.createConnection({
+//    host: 'sql5751672',
+//    user: 'sql5751672',
+//    password: 'GeqVAbSW4A',
+//    database: 'sql5.freemysqlhosting.net',
+//  port:3306,
 //})
 
 const mysqlConnection = new Pool({
