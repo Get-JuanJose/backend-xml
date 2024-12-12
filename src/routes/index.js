@@ -6,7 +6,7 @@ const xmlbuilder = require('xmlbuilder');
 const mysqlConnection = require("../database");
 
 router.get("/", (req, res) => {
-  mysqlConnection.query("Select * from empleados", (err, rows, fields) => {
+  mysqlConnection.query("Select * from empleados;", (err, rows, fields) => {
     if (!err) {
 
       const root = xmlbuilder.create('empleados');
@@ -37,7 +37,7 @@ router.get("/", (req, res) => {
 });
 
 router.get("/cargo", (req, res) => {
-  mysqlConnection.query("Select * from empleados", (err, rows, fields) => {
+  mysqlConnection.query("Select * from empleados;", (err, rows, fields) => {
     if (!err) {
       const cargosAgrupados = {
         cargos: rows.reduce((acc, empleado) => {
@@ -83,7 +83,7 @@ router.get("/cargo", (req, res) => {
 router.get("/:id", (req, res) => {
   const { id } = req.params;
   mysqlConnection.query(
-    "Select * from empleados where idEmpleado = ?",
+    "Select * from empleados where idEmpleado = ?;",
     [id],
     (err, rows, fields) => {
       if (!err) {
@@ -145,7 +145,7 @@ router.put("/:id", (req, res) => {
 router.delete("/:id", (req, res) => {
   const { id } = req.params;
   mysqlConnection.query(
-    "DELETE from empleados where idEmpleado = ?",
+    "DELETE from empleados where idEmpleado = ?;",
     [id],
     (err, rows, fields) => {
       if (!err) {
