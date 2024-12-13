@@ -1,4 +1,4 @@
-const mysql = require('mysql2')
+//const mysql = require('mysql2')
 const { Pool } = require('pg');
 
 //const mysqlConnection = mysql.createConnection({
@@ -10,7 +10,7 @@ const { Pool } = require('pg');
 //})
 
 const mysqlConnection = new Pool({
-connectionString: 'postgresql://movieshop_user:zP3QitlzPNpByoqWO3FMSSzFo1KSISrl@dpg-ctdgpmtumphs73837s0g-a.oregon-postgres.render.com:5432/movieshop',
+connectionString: 'postgresql://movieshop_user:zP3QitlzPNpByoqWO3FMSSzFo1KSISrl@dpg-ctdgpmtumphs73837s0g-a.oregon-postgres.render.com/movieshop',
       ssl: {
         rejectUnauthorized: false
     }

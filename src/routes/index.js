@@ -5,33 +5,34 @@ const xmlbuilder = require('xmlbuilder');
 
 const mysqlConnection = require("../database");
 
+// Arbol XML de todos los empleados
 router.get("/", (req, res) => {
-  mysqlConnection.query("Select * from empleados;", (err, rows, fields) => {
+  mysqlConnection.query("select * from empleados;", (err, rows, fields) => {
+
     if (!err) {
+      data = rows.rows //Determinamos los datos despues de la consulta
+      
+      if (data.length > 0) {
 
-       if (rows && Array.isArray(rows) && rows.length > 0) {
-      const root = xmlbuilder.create('empleados');
+        //Empezamos a construir el XML
+        const root = xmlbuilder.create('empleados');
 
-
-
-       // Iterate over the rows and add employee elements
-       rows.forEach(row => {
+       data.forEach(row => {
         const empleado = root.element('empleado')
-          empleado.ele('idEmpleado', row.idEmpleado)
-          empleado.ele('nameEmpleado', row.nameEmpleado)
-          empleado.ele('salarioEmpleado', row.salarioEmpleado)
-          empleado.ele('cargoEmpleado', row.cargoEmpleado);
+          empleado.ele('idEmpleado', row.idempleado)
+          empleado.ele('nameEmpleado', row.nameempleado)
+          empleado.ele('salarioEmpleado', row.salarioempleado)
+          empleado.ele('cargoEmpleado', row.cargoempleado);
       });
 
-      // Convertir el objeto a XML con la estructura deseada
-      //  const result = convert.json2xml({ empleados }, { compact : true });
-
-      // Convert the XML to a string
+              // Convert the XML to a string
       const xmlString = root.end({ pretty: true });
        res.header("Content-Type", "application/xml");
        res.send(xmlString);
-  // ... tu código existente para crear el XML
-      } else {
+
+      }
+      else{
+
         res.send(convert.json2xml({ message: "No se encontraron empleados" }, { compact: true }));
       }
       
@@ -41,36 +42,22 @@ router.get("/", (req, res) => {
   });
 });
 
+// Arbol XML de los cargos de la tienda
 router.get("/cargo", (req, res) => {
   mysqlConnection.query("Select * from empleados;", (err, rows, fields) => {
     if (!err) {
+      const data = rows.rows
       const cargosAgrupados = {
-        cargos: rows.reduce((acc, empleado) => {
+        cargos: data.reduce((acc, empleado) => {
           let cargo = acc.find(
-            (car) => car.nombreCargo === empleado.cargoEmpleado
+            (car) => car.nombreCargo === empleado.cargoempleado
           );
 
-          //Si el cargo existe, añade el empleado; si no lo crea
-          if (cargo) {
-            // cargo.empleados.push({
-            //   // id: empleado.idEmpleado,
-            //   // nombre: empleado.nameEmpleado,
-            //   // salario: empleado.salarioEmpleado,
-            //   // cargo: empleado.cargoEmpleado,
-            // });
-          } else {
+          if (!cargo) {
             acc.push({
-              nombreCargo: empleado.cargoEmpleado,
-              // empleados: [
-              //   {
-              //     // id: empleado.idEmpleado,
-              //     // nombre: empleado.nameEmpleado,
-              //     // salario: empleado.salarioEmpleado,
-              //     // cargo: empleado.cargoEmpleado,
-              //   },
-              // ],
+            nombreCargo: empleado.cargoempleado,
             });
-          }
+          } 
 
           return acc;
         }, []),
@@ -85,28 +72,39 @@ router.get("/cargo", (req, res) => {
   });
 });
 
+//Muestra el empleado por el id
 router.get("/:id", (req, res) => {
-  const { id } = req.params;
+  const { id } = req.params
+  const sql =  `SELECT * FROM empleados WHERE idempleado = $1`
   mysqlConnection.query(
-    "Select * from empleados where idEmpleado = ?;",
+   sql,
     [id],
     (err, rows, fields) => {
-      if (!err) {
+
+        if (!err) {
+
+        const data =  rows.rows
+        //res.send(rows) 
         res.header("Content-Type", "application/xml");
-        result = convert.json2xml(rows[0], { compact: true });
+        result = convert.json2xml(data, { compact: true });
         res.send(result);
-      } else {
-        console.log(err);
-      }
+
+        } else {
+            console.error("Error en la consulta:", err);
+            res.status(500).send("Error en el servidor");
+        }
     }
-  );
+);
+
 });
 
+
+//Creación o edición de un registro
 router.post("/", (req, res) => {
   const { id, name, salary, cargo } = req.body;
 
   const query = `
-        CALL empleadoAddorEdit(?,?,?,?);
+        SELECT empleado_add_or_edit($1,$2,$3,$4)
             `;
   mysqlConnection.query(
     query,
@@ -123,11 +121,13 @@ router.post("/", (req, res) => {
   );
 });
 
+
+//Actualización de un registro
 router.put("/:id", (req, res) => {
   const { name, salary, cargo } = req.body;
   const { id } = req.params;
   const query = `
-      CALL empleadoAddorEdit(?,?,?,?);
+        SELECT empleado_add_or_edit($1,$2,$3,$4);
           `;
   mysqlConnection.query(
     query,
@@ -147,10 +147,12 @@ router.put("/:id", (req, res) => {
   );
 });
 
+// Eliminacion de un resgistro
+
 router.delete("/:id", (req, res) => {
   const { id } = req.params;
   mysqlConnection.query(
-    "DELETE from empleados where idEmpleado = ?;",
+    "DELETE from empleados where idempleado = $1",
     [id],
     (err, rows, fields) => {
       if (!err) {
